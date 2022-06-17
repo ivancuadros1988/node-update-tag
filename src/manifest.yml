@@ -1,0 +1,38 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-service-demo
+spec:
+  type: LoadBalancer
+  selector:
+    app: service-demo
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+    name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment-demo
+  labels:
+    app: service-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-demo
+  template:
+    metadata:
+      labels:
+        app: service-demo
+    spec:
+      containers:
+      - name: app-demo
+        ports:
+        - containerPort: 5000
+        env:
+        - name: FROM_ENV
+          value: "Kubernetes 11"
+        image: icuadrosaforo255/node-devops:8
